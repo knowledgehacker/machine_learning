@@ -1,0 +1,4 @@
+Blank Verse refers to unrhymed iambic pentameter. Blank verse resembles prose in that the final words of the lines do not rhyme in any regular 
+pattern (although an occasional rhyming couplet may be found).  Unlike prose, there is a recognizable meter:  most lines are in iambic pentameter,
+i.e. they consist of ten syllables alternating unstressed and stressed syllables (there may be some irregularities, such an occasional troche 
+mixed in with the iambs or an extra unstressed syllable at the end of a line).

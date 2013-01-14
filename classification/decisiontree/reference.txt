@@ -1,0 +1,3 @@
+"Nonsurfacing?" 
+"No": [("No", "Yes", "No") ("No", "Yes", "No") ] "Yes": "Flippers?" 
+"No": [("Yes", "No", "No") ] "Yes": [("Yes", "Yes", "Yes") ("Yes", "Yes", "Yes") ] 

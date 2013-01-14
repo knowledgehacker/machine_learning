@@ -1,0 +1,5 @@
+Rhymed verse in Shakespeare's plays is usually in rhymed couplets, i.e. two successive lines of verse of which the final words rhyme with another.
+The rhyme pattern of verse in rhyming couplets is conventionally represented aa bb cc etc., with the letters a, b, and c referring to the rhyming 
+sound of the final  word in a line.  (A single rhymed couplet may also appear at the end of a speech or scene in blank verse, in which case it is 
+called a capping couplet.)  When the two lines of a rhyming couplet are in iambic pentameter, they are called heroic couplets. Example: Helena's 
+lament in A Midsummer Night's Dream (I.i.234-9)

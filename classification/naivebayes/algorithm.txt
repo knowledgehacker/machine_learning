@@ -1,0 +1,25 @@
+
+Input: document set(each document is classified, that is, each document is labeled some class)
+Steps:
+	1. Get the following information during parsing the documents one by one in the document set:
+	a) The number of i) total documents and ii) documents by class.
+	b) The number of tokens i) in documents of some class and ii) in all documents in the daocument set.
+	c) Appearance times of i) some word in documents of some class and 2) some word in all docuemnts in the document set.
+	
+	2. Calculate p(ci), p(t|ci), p(t) based on the information got in 1.
+	p(ci) = (number of documents labeled class 'ci') | (number of all documents in the document set);
+	p(t|ci) = (number of appearance times of token 't' in documents of class 'ci') / (number of all tokens in documents of class 'ci');
+	p(t) = (appearance times of token 't' in all documents in the document set) / (number of all tokens in all documents in the document set);
+	N.B. note here we calculate p(t|ci) and p(t) based on summing the appearance times of token 't' or all tokens in documents of class 'ci' or all
+	documents in the document set, this is called 'bag-of-words document model'. In some cases, we treat the appearance of token 't' in one 
+	docuement as one time no matter how many times of the appearance of the token in the document, this is called 'set-of-words document model'.
+
+	3. Claculate p(ci|t) using Bayes rule:
+	p(ci|t) = p(t|ci)*p(ci)/p(t);
+
+	4. Predict which class that each document in the test set belongs to.
+	For each document 'doc' in the test set, the probability that it belongs to class 'ci' is: p(doc|ci) = p(t1|ci)*...p(tn|ci), t1...tn are tokens
+	in document 'doc'. Then choose the class 'ck' with the maximum probability as the prediction.
+
+Output:
+	Error rate of the prediction of classification of documents in the test set.
