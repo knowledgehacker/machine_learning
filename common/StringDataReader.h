@@ -1,3 +1,7 @@
+/**
+ * Copyright(c) 2012 - 2013 minglin. All rights reserved.
+ */
+
 #ifndef _STRING_DATA_READER_H_
 #define _STRING_DATA_READER_H_
 

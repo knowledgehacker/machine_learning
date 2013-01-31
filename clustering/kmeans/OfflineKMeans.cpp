@@ -1,11 +1,15 @@
+/**
+ * Copyright(c) 2012 - 2013 minglin. All rights reserved.
+ */
+
 #include "OfflineKMeans.h"
 #include "Samples.cpp"
 #include <limits>
 #include <cstdlib>
 #include <iostream>
 
-OfflineKMeans::OfflineKMeans(const Samples<float>& data, const int k): samples(data), featureNum(data.getFeatureNum()), 
-	sampleNum(data.getSampleNum()), clusterNum(k) {
+OfflineKMeans::OfflineKMeans(const Samples<float>& data, const int k): samples(data),
+	featureNum(data.getFeatureNum()), sampleNum(data.getSampleNum()), clusterNum(k) {
 	initClusters();
 #ifdef OKM_DBG
 	print();
@@ -35,7 +39,7 @@ void OfflineKMeans::initClusters() {
 		featureRanges[j].second = maxFeatureJ;
 	}
 
-	// initialize centroids of clusters, feature values of each centroids are within the corresponding ones.
+	// initialize centroids of clusters.
 	clusters = new std::pair<float*, std::set<float*> >[clusterNum];
 	for(int i = 0; i < clusterNum; ++i) {
 		float* centroid = new float[featureNum];
@@ -61,7 +65,9 @@ void OfflineKMeans::initClusters() {
 	}
 #endif
 
-	// cluster all samples for the first time, setup mapping from samples to clusters and centroids of clusters.
+	/* cluster all samples for the first time.
+	 * setup mapping from samples to clusters and centroids of clusters.
+	 */
 	clusterIndexes = new int[sampleNum];
 	for(int i = 0; i < sampleNum; ++i) {
 		const float* sample = samples.getSample(i);
@@ -88,13 +94,17 @@ bool OfflineKMeans::reCluster() {
 			clusterChanged = true;
 
 #ifdef OKM_DBG
-			std::cout<<"i = "<<i<<", oldCluster = "<<oldCluster<<", newCluster = "<<newCluster<<std::endl;
+			std::cout<<"i = "<<i<<", oldCluster = "<<oldCluster<<", newCluster = "
+				<<newCluster<<std::endl;
 #endif
 			// move sample from the old cluster to the new cluster.
 			clusters[oldCluster].second.erase(const_cast<float*>(sample));
 			clusters[newCluster].second.insert(const_cast<float*>(sample));
 
-			// set clusterIndexes[i] to newCluster to indicate now sample indexed by 'i' is in cluster indexed by 'newCluster'.
+			/*
+			 * set clusterIndexes[i] to newCluster to indicate now sample 
+			 * indexed by 'i' is in cluster indexed by 'newCluster'.
+			 */
 			clusterIndexes[i] = newCluster;
 		}
 	}
@@ -105,7 +115,8 @@ bool OfflineKMeans::reCluster() {
 }
 
 /*
- * Update the centroids of all clusters, it is always called after all samples are clustered in one round.
+ * Update the centroids of all clusters, it is always called after 
+ * all samples are clustered in one round.
  * To improve: only update the centroids of the affected clusters.
  */
 void OfflineKMeans::updateCentroids() {
@@ -115,7 +126,8 @@ void OfflineKMeans::updateCentroids() {
 		if(clusterSize > 0) {
 			for(int j = 0; j < featureNum; ++j) {
 				float featureJ = 0.0;
-				for(std::set<float*>::iterator iter = cluster.begin(); iter != cluster.end(); ++iter)
+				for(std::set<float*>::iterator iter = cluster.begin();
+					iter != cluster.end(); ++iter)
 					featureJ += (*iter)[j];
 				(clusters[i].first)[j] = featureJ / clusterSize;
 			}
@@ -138,7 +150,8 @@ int OfflineKMeans::cluster(const float* sample, const int len)const {
 	return targetCluster;
 }
 	
-float OfflineKMeans::distance(const float* sample1, const float* sample2, const int len)const {
+float OfflineKMeans::distance(const float* sample1, const float* sample2,
+	const int len)const {
 	float dist = 0.0;
 	for(int i = 0; i < len; ++i)
 		dist += (sample1[i] - sample2[i]) * (sample1[i] - sample2[i]);
@@ -157,7 +170,8 @@ void OfflineKMeans::print()const {
 		std::cout<<centroid[j]<<">, ";
 
 		std::set<float*>& clusterSamples = clusters[i].second;
-		for(std::set<float*>::iterator iter = clusterSamples.begin(); iter != clusterSamples.end(); ++iter) {
+		for(std::set<float*>::iterator iter = clusterSamples.begin();
+			iter != clusterSamples.end(); ++iter) {
 			std::cout<<"[";
 			for(j = 0; j < featureNum-1; ++j)
 				std::cout<<(*iter)[j]<<" ";

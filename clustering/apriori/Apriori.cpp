@@ -1,3 +1,7 @@
+/**
+ * Copyright(c) 2012 - 2013 minglin. All rights reserved.
+ */
+
 #include "Apriori.h"
 #include <iostream>
 
@@ -22,7 +26,8 @@ bool operator<(const SampleSet<U>& ss1, const SampleSet<U>& ss2) {
  * SampleSet implmentation.
  */
 template<typename T>
-SampleSet<T>::SampleSet(const std::vector<T>& set, const float sup): sampleSet(set), support(sup) {
+SampleSet<T>::SampleSet(const std::vector<T>& set, const float sup):
+	sampleSet(set), support(sup) {
 }
 
 template<typename T>
@@ -75,12 +80,14 @@ SampleSet<T>::~SampleSet() {
  * Apriori implementation.
  */
 template<typename DataType>
-Apriori<DataType>::Apriori(const std::vector<std::set<DataType> >& data, const float thres): samples(data), rowNum(data.size()), 
+Apriori<DataType>::Apriori(const std::vector<std::set<DataType> >& data, const float thres):
+	samples(data), rowNum(data.size()), 
 	threshold(thres), sampleSetsVector(rowNum) {
 	// Retrieve all unique samples from 'samples'
 	for(int i = 0; i < rowNum; ++i){
 		const std::set<DataType>& rowSamples = samples[i];
-		for(typename std::set<DataType>::const_iterator iter = rowSamples.begin(); iter != rowSamples.end(); ++iter)
+		for(typename std::set<DataType>::const_iterator iter = rowSamples.begin();
+			iter != rowSamples.end(); ++iter)
 			uniqueSamples.insert(*iter);
 	}
 
@@ -88,7 +95,8 @@ Apriori<DataType>::Apriori(const std::vector<std::set<DataType> >& data, const f
 	
 	int uniqueSampleNum = uniqueSamples.size();
 #ifdef AP_DBG
-	for(typename std::set<DataType>::const_iterator iter = uniqueSamples.begin(); iter != uniqueSamples.end(); ++iter)
+	for(typename std::set<DataType>::const_iterator iter = uniqueSamples.begin();
+		iter != uniqueSamples.end(); ++iter)
 		std::cout<<*iter<<" ";
 	std::cout<<std::endl;
 #endif
@@ -99,13 +107,14 @@ Apriori<DataType>::Apriori(const std::vector<std::set<DataType> >& data, const f
 
 /*
  * Generate initial SampleSets that have only one sample.
- * We calculate the frequency of each sample in 'uniqueSamples' and create a SampleSet for the sample if its frequency >= 'threshold'.
- * Add the SampleSets to 'sampleSetsVector[0]'.
+ * We calculate the frequency of each sample in 'uniqueSamples' and create a SampleSet for 
+ * the sample if its frequency >= 'threshold'. Add the SampleSets to 'sampleSetsVector[0]'.
  */
 template<typename DataType>
 void Apriori<DataType>::genFirstSampleSet() {
 	std::set<SampleSet<DataType> > sampleSets;
-	for(typename std::set<DataType>::const_iterator iter = uniqueSamples.begin(); iter != uniqueSamples.end(); ++iter) {
+	for(typename std::set<DataType>::const_iterator iter = uniqueSamples.begin();
+		iter != uniqueSamples.end(); ++iter) {
 		DataType uniqueSample = *iter;
 
 		int freq = 0;
@@ -121,8 +130,10 @@ void Apriori<DataType>::genFirstSampleSet() {
 			SampleSet<DataType> sampleSet(oneSample, support);
 
 			/*
-			 * Note if we do not allocate space for a std::vector initially, adding to it by index will cause segment fault(index out of bound).
-			 * But adding to it by push_back is OK, since push_back causes reallocate if the space is not enough.
+			 * Note if we do not allocate space for a std::vector initially, 
+			 * adding to it by index will cause segment fault(index out of bound).
+			 * But adding to it by push_back is OK, since push_back causes reallocate
+			 * if the space is not enough.
 			 */
 			sampleSetsVector[0].insert(sampleSet);
 		}
@@ -130,10 +141,12 @@ void Apriori<DataType>::genFirstSampleSet() {
 }
 
 /*
- * Generate SampleSets that have k+2 samples from SampleSets that have k+1 samples(SampleSets in 'sampleSetsVector[k]').
- * Firstly, we calculate all the non-duplicated possible SampleSets that have k+2 samples from 'SampleSetsVector[k]', put it in 'newSampleSets'.
- * Then, we iterate 'newSampleSets' to calculate the frequency of each SampleSet, and insert the ones whose frequency >= threshold into 
- * 'sampleSetsVector[k+1]'.
+ * Generate SampleSets that have k+2 samples from SampleSets that have k+1 samples
+ * (SampleSets in 'sampleSetsVector[k]').
+ * Firstly, we calculate all the non-duplicated possible SampleSets that have k+2
+ * samples from 'SampleSetsVector[k]', put it in 'newSampleSets'.
+ * Then, we iterate 'newSampleSets' to calculate the frequency of each SampleSet,
+ * and insert the ones whose frequency >= threshold into 'sampleSetsVector[k+1]'.
  */
 template<typename DataType>
 void Apriori<DataType>::genNextSampleSet(const int k) {
@@ -141,11 +154,12 @@ void Apriori<DataType>::genNextSampleSet(const int k) {
 
 	// note sampleSet in sampleSetsVector[k] has k+1 samples
 	const std::set<SampleSet<DataType> >& sampleSets = sampleSetsVector[k];
-	typedef typename std::set<SampleSet<DataType> >::iterator SampleSetIterator;	// non-const iterator
+	typedef typename std::set<SampleSet<DataType> >::iterator SampleSetIterator;
 	SampleSetIterator curr = sampleSets.begin();
 	while(curr != sampleSets.end()) {
 		SampleSetIterator tmp = curr;
-		for(SampleSetIterator next = ++curr; next != sampleSets.end(); ++next) {
+		for(SampleSetIterator next = ++curr;
+			next != sampleSets.end(); ++next) {
 			if((*tmp).compareTo(*next, k)) {
 				SampleSet<DataType> newSampleSet(*tmp);
 				newSampleSet.add((*next)[k]);
@@ -154,7 +168,8 @@ void Apriori<DataType>::genNextSampleSet(const int k) {
 		}
 	}
 
-	for(SampleSetIterator iter = newSampleSets.begin(); iter != newSampleSets.end(); ++iter) {
+	for(SampleSetIterator iter = newSampleSets.begin();
+		iter != newSampleSets.end(); ++iter) {
 		const SampleSet<DataType>& newSampleSet = (*iter);
 		int newSampleSetSize = newSampleSet.size();
 
@@ -173,7 +188,6 @@ void Apriori<DataType>::genNextSampleSet(const int k) {
 		}
 		float support = static_cast<float>(freq) / rowNum;
 		if(support >= threshold) {
-			// we can't change the 'support' field of the existing SampleSet by (*iter).setSupport(support) directly
 			SampleSet<DataType> tmp(*iter);
 			tmp.setSupport(support);
 			
@@ -188,7 +202,8 @@ void Apriori<DataType>::print()const {
 	for(int i = 0; i < sampleSetsNum; ++i) {
 		std::cout<<i+1<<"- ";
 		const std::set<SampleSet<DataType> >& sampleSets = sampleSetsVector[i];
-		for(typename std::set<SampleSet<DataType> >::const_iterator iter = sampleSets.begin(); iter != sampleSets.end(); ++iter)
+		for(typename std::set<SampleSet<DataType> >::const_iterator iter = 
+			sampleSets.begin(); iter != sampleSets.end(); ++iter)
 			std::cout<<*iter<<" ";
 		std::cout<<std::endl;
 	}

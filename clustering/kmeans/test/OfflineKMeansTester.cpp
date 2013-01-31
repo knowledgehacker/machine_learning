@@ -1,3 +1,7 @@
+/**
+ * Copyright(c) 2012 - 2013 minglin. All rights reserved.
+ */
+
 #include "OfflineKMeans.h"
 #include "FloatDataReader.h"
 #include "Samples.cpp"

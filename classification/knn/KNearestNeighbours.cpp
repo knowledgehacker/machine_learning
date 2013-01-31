@@ -1,3 +1,7 @@
+/**
+ * Copyright(c) 2012 - 2013 minglin. All rights reserved.
+ */
+
 #include "KNearestNeighbours.h"
 #include "NMinHeap.cpp"
 #include <cmath>
@@ -59,12 +63,14 @@ bool KNearestNeighbours::KNN(int testDigit, const std::bitset<1024>& testSample)
 }
 
 float KNearestNeighbours::getErrorRate()const {
-	std::cout<<"errorTestSample = "<<errorTestSample<<", totalTestSample = "<<totalTestSample<<std::endl;
+	std::cout<<"errorTestSample = "<<errorTestSample<<", totalTestSample = "
+		<<totalTestSample<<std::endl;
 	return static_cast<float>(errorTestSample) / static_cast<float>(totalTestSample);
 }
 
 /*
- * Performance boosts greatly when I optimized the code snippet below, the execution time reduces from 3897ms to 616ms, amazing!
+ * Performance boosts greatly when I optimized the code snippet below, 
+ * the execution time reduces from 3897ms to 616ms, amazing!
  * int squareSum = 0;
  * for(int i = 0; i < 1024; ++i) {
  *     int diff = sample1[i] ^ sample2[i];
@@ -75,7 +81,8 @@ float KNearestNeighbours::getErrorRate()const {
  *
  * int squareSum = (sample1 ^ sample2).count();
  */
-float KNearestNeighbours::distance(const std::bitset<1024>& sample1, const std::bitset<1024>& sample2)const {
+float KNearestNeighbours::distance(const std::bitset<1024>& sample1, 
+	const std::bitset<1024>& sample2)const {
 	int squareSum = (sample1 ^ sample2).count();
 
 	return sqrt(static_cast<float>(squareSum));

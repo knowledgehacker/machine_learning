@@ -1,3 +1,7 @@
+/**
+ * Copyright(c) 2012 - 2013 minglin. All rights reserved.
+ */
+
 #include "FloatDataReader.h"
 #include "Samples.cpp"
 #include "Sigmoid.h"
@@ -20,7 +24,8 @@ int main(int argc, char** argv) {
 	for(int i = 0; i < testSampleNum; ++i) {
 		const float* testSample = testSamples.getSample(i);
 		int category = lr.classify(testSample);
-		std::cout<<"sample "<<i<<": "<<"predicted = "<<category<<", expected = "<<testSample[featureNum]<<std::endl;
+		std::cout<<"sample "<<i<<": "<<"predicted = "<<category<<", expected = "
+			<<testSample[featureNum]<<std::endl;
 	}
 */
 

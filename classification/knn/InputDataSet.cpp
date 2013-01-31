@@ -1,3 +1,7 @@
+/**
+ * Copyright(c) 2012 - 2013 minglin. All rights reserved.
+ */
+
 #include "InputDataSet.h"
 #include <fstream>
 #include <sstream>
@@ -56,7 +60,8 @@ bool InputDataSet::readSample(std::string sampleFile, std::ostringstream& sample
 		sampleStream.getline(line, 256);
 		if(sampleStream.bad()){
 			sampleStream.close();
-			throw std::runtime_error("Unercoverable error detected when reading from file " + sampleFile + "!");
+			throw std::runtime_error("Unercoverable error detected when reading from file "
+				+ sampleFile + "!");
 		}
 		if(sampleStream.fail() && !sampleStream.eof()){
 			sampleStream.close();

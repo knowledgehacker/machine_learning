@@ -1,10 +1,17 @@
+/**
+ * Copyright(c) 2012 - 2013 minglin. All rights reserved.
+ */
+
 #include "Apriori.cpp"
 #include <string>
 
 int main(int argc, char** argv) {
 	/*
-	 * 1- [0.4, {Item0}] [0.4, {Item1}] [0.8, {Item2}] [0.6, {Item3}] [0.4, {Item4}] [0.6, {Item5}] 
-	 * 2- [0.4, {Item0, Item2}] [0.4, {Item1, Item2}] [0.4, {Item2, Item3}] [0.6, {Item2, Item5}] [0.4, {Item3, Item5}] 
+	 * 1- [0.4, {Item0}] [0.4, {Item1}] [0.8, {Item2}] 
+	 *	  	[0.6, {Item3}] [0.4, {Item4}] [0.6, {Item5}] 
+	 * 2- [0.4, {Item0, Item2}] [0.4, {Item1, Item2}] 
+	 * 		[0.4, {Item2, Item3}] [0.6, {Item2, Item5}]
+	 * 		[0.4, {Item3, Item5}] 
 	 * 3- [0.4, {Item2, Item3, Item5}]
 	 */
 	std::string transactions[5][4] = {

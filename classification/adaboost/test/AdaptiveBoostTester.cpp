@@ -1,3 +1,7 @@
+/**
+ * Copyright(c) 2012 - 2013 minglin. All rights reserved.
+ */
+
 #include "FloatDataReader.h"
 #include "Samples.cpp"
 #include "AdaptiveBoost.h"

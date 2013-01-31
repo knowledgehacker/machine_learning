@@ -1,3 +1,7 @@
+/**
+ * Copyright(c) 2012 - 2013 minglin. All rights reserved.
+ */
+
 #ifndef _OFFLINE_K_MEANS_H_
 #define _OFFLINE_K_MEANS_H_
 
@@ -12,7 +16,10 @@ private:
 	int sampleNum;
 	std::pair<float*, std::set<float*> >* clusters;
 	int clusterNum;
-	// Mapping from samples to clusters. clusterIndexes[i] means sample indexed by 'i' is in cluster indexed by 'clusterIndexes[i]'.
+	/*
+	 * Mapping from samples to clusters. clusterIndexes[i] means sample indexed by 'i'
+	 * is in cluster indexed by 'clusterIndexes[i]'.
+	 */
 	int* clusterIndexes;
 
 public:

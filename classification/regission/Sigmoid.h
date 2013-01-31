@@ -1,3 +1,7 @@
+/**
+ * Copyright(c) 2012 - 2013 minglin. All rights reserved.
+ */
+
 #ifndef _SIGMOID_H_
 #define _SIGMOID_H_
 

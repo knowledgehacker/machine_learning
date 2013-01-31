@@ -1,3 +1,7 @@
+/**
+ * Copyright(c) 2012 - 2013 minglin. All rights reserved.
+ */
+
 #ifndef _APRIORI_H_
 #define _APRIORI_H_
 
@@ -25,7 +29,7 @@ public:
 	void add(const T& sample);
 	T& operator[](const int index);
 	/*
-	 * Note we should overload const version operator[], since when SampleSet is used with STL container, 
+	 * We should overload const version operator[], since when SampleSet is used with STL container, 
 	 * the container ensures its elements should be const when they are used as r-value.
 	 * It is a good habit to overload the const version as well when overload non-const operator[].
 	 */

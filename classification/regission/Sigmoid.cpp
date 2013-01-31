@@ -1,3 +1,7 @@
+/**
+ * Copyright(c) 2012 - 2013 minglin. All rights reserved.
+ */
+
 #include "Sigmoid.h"
 #include "Utils.h"
 #ifdef LR_DEBUG

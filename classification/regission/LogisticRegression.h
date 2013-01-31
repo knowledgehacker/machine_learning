@@ -1,3 +1,7 @@
+/**
+ * Copyright(c) 2012 - 2013 minglin. All rights reserved.
+ */
+
 #ifndef _LOGISTIC_REGRESSION_H_
 #define _LOGISTIC_REGRESSION_H_
 
@@ -18,7 +22,8 @@ private:
 	long double* parameters;
 
 public:
-	LogisticRegression(const Samples<float>& samples, const float a, const RegressionFunction& regFunc, float threshold);
+	LogisticRegression(const Samples<float>& samples, const float a,
+		const RegressionFunction& regFunc, float threshold);
 	int classify(const float* testSample);
 	~LogisticRegression();
 
@@ -26,7 +31,8 @@ private:
 	// return: iterations to reach convergence.
 	int gradientAscent();
 	void stochasticGradientAscent();
-	bool convergent(const long double* deviations, const float categoryRange)const;
+	bool convergent(const long double* deviations,
+		const float categoryRange)const;
 };
 
 #endif

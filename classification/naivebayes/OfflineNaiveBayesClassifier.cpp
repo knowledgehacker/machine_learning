@@ -1,10 +1,15 @@
+/**
+ * Copyright(c) 2012 - 2013 minglin. All rights reserved.
+ */
+
 #include "OfflineNaiveBayesClassifier.h"
 #include "FileTokenizer.h"
 #include "Utils.h"
 #include "Vector.cpp"
 #include <iostream>
 
-OfflineNaiveBayesClassifier::OfflineNaiveBayesClassifier(InputDataSet& inputDataSet): categoryNum(inputDataSet.getCategoryNum()) {
+OfflineNaiveBayesClassifier::OfflineNaiveBayesClassifier(InputDataSet& inputDataSet):
+	categoryNum(inputDataSet.getCategoryNum()) {
 	if(categoryNum <= 0)
 		return;
 	
@@ -20,7 +25,8 @@ OfflineNaiveBayesClassifier::OfflineNaiveBayesClassifier(InputDataSet& inputData
 	vocabularyNum = 0;
 	for(int i = 0; i < categoryNum; ++i) {
 		std::vector<std::string>& cateDocuments = documents[i];
-		for(std::vector<std::string>::const_iterator iter = cateDocuments.begin(); iter != cateDocuments.end(); ++iter) {
+		for(std::vector<std::string>::const_iterator iter = cateDocuments.begin();
+			iter != cateDocuments.end(); ++iter) {
 			FileTokenizer tokenizer(dirName + *iter);
 			while(tokenizer.hasNext()) {
 				std::string token = tokenizer.nextToken();
@@ -32,7 +38,8 @@ OfflineNaiveBayesClassifier::OfflineNaiveBayesClassifier(InputDataSet& inputData
 	}
 #ifdef NBC_DEBUG
 	std::cout<<"vocabularyNum = "<<vocabularyNum<<std::endl;
-	for(std::map<std::string, int>::const_iterator iter = vocabulary.begin(); iter != vocabulary.end(); ++iter)
+	for(std::map<std::string, int>::const_iterator iter = vocabulary.begin();
+		iter != vocabulary.end(); ++iter)
 		std::cout<<"("<<(*iter).first<<", "<<(*iter).second<<") ";
 	std::cout<<std::endl;
 #endif
@@ -50,7 +57,8 @@ OfflineNaiveBayesClassifier::OfflineNaiveBayesClassifier(InputDataSet& inputData
 	documentTokens = new std::map<std::string, int>[categoryNum];
 	for(int i = 0; i < categoryNum; ++i) {
 		std::vector<std::string>& cateDocuments = documents[i];
-		for(std::vector<std::string>::const_iterator iter = cateDocuments.begin(); iter != cateDocuments.end(); ++iter) {
+		for(std::vector<std::string>::const_iterator iter = cateDocuments.begin();
+			iter != cateDocuments.end(); ++iter) {
 #ifdef USE_VECTOR
 			Vector<int> docVector(vocabularyNum);
 #else
@@ -67,7 +75,7 @@ OfflineNaiveBayesClassifier::OfflineNaiveBayesClassifier(InputDataSet& inputData
 			int docTokens = 0;
 			while(tokenizer.hasNext()) {
 				/*
-				 * This is an offline version, vocabulary contains all the words in document 'docToClassify'.
+				 * For offline, vocabulary contains all the words in document 'docToClassify'.
 				 * So we don't need to check whether the token exists in the vocabulary or not.
 				 */
 #ifdef NBC_DEBUG
@@ -79,7 +87,7 @@ OfflineNaiveBayesClassifier::OfflineNaiveBayesClassifier(InputDataSet& inputData
 
 				++docTokens;
 			}
-			// Question: Why Vector's copy constructor is called twice when the following statement is executed?
+			// Why Vector's copy constructor is called twice for the following statement?
 #ifdef NBC_DEBUG
 			std::cout<<"before documentVectors[i][docName] = docVector;"<<std::endl;
 #endif
@@ -101,19 +109,26 @@ OfflineNaiveBayesClassifier::OfflineNaiveBayesClassifier(InputDataSet& inputData
 }
 
 /*
- * Here calculate the probabilities of document 'docToClassify' belonging to class 'Ci' one by one, and choose the class with maximum probability.
+ * Here calculate the probabilities of document 'docToClassify' belonging to class 'Ci' one by one, 
+ * and choose the class with maximum probability.
  * P(Ci|'docToClassify') = P(Ci|W0) * ... * P(Ci|Wn), W0...Wn are words in document 'docToClassify'.
  *
  * P(Ci|Wi) = P(Wi|Ci) * P(Ci) / P(Wi).
- * P(Wi|Ci) = (number of documents belonging to class 'Ci' containing word 'Wi') / (number of words in documents belonging to class 'Ci').
- * P(Ci) = (number of words in documents belonging to class 'Ci') / (number of words in all documents of all classes).
- * P(Wi) = (number of documents of all classes containing word 'Wi') / (number of words in all documents of all classes).
+ * P(Wi|Ci) = (number of documents belonging to class 'Ci' containing word 'Wi') 
+ * 				/ (number of words in documents belonging to class 'Ci').
+ * P(Ci) = (number of words in documents belonging to class 'Ci') 
+ * 			 / (number of words in all documents of all classes).
+ * P(Wi) = (number of documents of all classes containing word 'Wi') 
+ * 			 / (number of words in all documents of all classes).
  *
- * N.B. Above we plus 1 to the nominator when word 'Wi' appears in some document no matter how many times of occurrences of it in the 
- * document when calculating P(Wi|Ci) and P(Wi). 
- * We can take the occurrences of word 'Wi' in some document into account, which induces the following formulas:
- * P(Wi|Ci) = (number of occurrences of word 'Wi' in documents belonging to class 'Ci') / (number of words in documents belonging to class 'Ci').
- * P(Wi) = (number of occurrences of word 'Wi' in documents of all classes) / (number of words in all documents of all classes).
+ * N.B. Above we plus 1 to the nominator when word 'Wi' appears in some document no matter 
+ * how many times of occurrences of it in the document when calculating P(Wi|Ci) and P(Wi). 
+ * We can take the occurrences of word 'Wi' in a document into account, 
+ * which induces the following formulas:
+ * P(Wi|Ci) = (number of occurrences of word 'Wi' in documents belonging to class 'Ci') 
+ * 				/ (number of words in documents belonging to class 'Ci').
+ * P(Wi) = (number of occurrences of word 'Wi' in documents of all classes) 
+ * 			/ (number of words in all documents of all classes).
  */ 
 int OfflineNaiveBayesClassifier::classify(const std::string& docToClassify) {
 	float* cateProb = new float[categoryNum];
@@ -123,7 +138,8 @@ int OfflineNaiveBayesClassifier::classify(const std::string& docToClassify) {
 	int totalTokens = 0;
 	for(int i = 0; i < categoryNum; ++i) {
 		std::map<std::string, int>& cateTokens = documentTokens[i];
-		for(std::map<std::string, int>::iterator iter = cateTokens.begin(); iter != cateTokens.end(); ++iter)
+		for(std::map<std::string, int>::iterator iter = cateTokens.begin(); 
+			iter != cateTokens.end(); ++iter)
 			totalTokens += (*iter).second;
 	}
 #ifdef NBC_DEBUG
@@ -148,7 +164,8 @@ int OfflineNaiveBayesClassifier::classify(const std::string& docToClassify) {
 #endif
 		for(int i = 0; i < categoryNum; ++i) {
 			std::vector<std::string>& cateDocuments = documents[i];
-			for(std::vector<std::string>::const_iterator iter = cateDocuments.begin(); iter != cateDocuments.end(); ++iter) {
+			for(std::vector<std::string>::const_iterator iter = cateDocuments.begin();
+				iter != cateDocuments.end(); ++iter) {
 				std::string docName = *iter;
 				if(documentVectors[i][docName][vocabulary[token]] == 1) {
 					++cateFreq[i];
@@ -163,13 +180,14 @@ int OfflineNaiveBayesClassifier::classify(const std::string& docToClassify) {
 			if(cateFreq[i] == 0)
 				prob = static_cast<float>(cateTokens[i]) / totalTokens;
 			else
-				prob = (static_cast<float>(cateFreq[i]) / cateTokens[i]) * (static_cast<float>(cateTokens[i]) / totalTokens) / 
-					(static_cast<float>(totalFreq) / totalTokens);
+				prob = (static_cast<float>(cateFreq[i]) / cateTokens[i])
+					* (static_cast<float>(cateTokens[i]) / totalTokens) 
+					/ (static_cast<float>(totalFreq) / totalTokens);
 			cateProb[i] *= prob;
 	
 #ifdef NBC_DEBUG
-			std::cout<<"cateFreq["<<i<<"] = "<<cateFreq[i]<<", cateTokens["<<i<<"] = "<<cateTokens[i]<<", prob = "<<prob<<
-				", cateProb["<<i<<"] = "<<cateProb[i]<<std::endl;
+			std::cout<<"cateFreq["<<i<<"] = "<<cateFreq[i]<<", cateTokens["<<i<<"] = "<<cateTokens[i]
+				<<", prob = "<<prob<<", cateProb["<<i<<"] = "<<cateProb[i]<<std::endl;
 #endif
 		}
 	}
@@ -199,7 +217,8 @@ OfflineNaiveBayesClassifier::~OfflineNaiveBayesClassifier() {
 #ifndef USE_VECTOR		
 		for(int category = 0; category < categoryNum; ++category) {
 			std::map<std::string, int*>& cateVectors = documentVectors[category];
-			for(std::map<std::string, int*>::iterator iter = cateVectors.begin(); iter != cateVectors.end(); ++iter) {
+			for(std::map<std::string, int*>::iterator iter = cateVectors.begin(); 
+				iter != cateVectors.end(); ++iter) {
 				int* value = (*iter).second;
 				delete[] value;
 			}

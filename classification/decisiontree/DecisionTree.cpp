@@ -1,3 +1,7 @@
+/**
+ * Copyright(c) 2012 - 2013 minglin. All rights reserved.
+ */
+
 #include "DecisionTree.h"
 #include "Utils.h"
 #include "Samples.cpp"
@@ -6,8 +10,8 @@
 #include <queue>
 #include <iostream>
 
-DecisionTree::DecisionTree(const Samples<std::string>& samples): root(0), trainingSamples(samples), featureNum(samples.getFeatureNum()), 
-	sampleNum(samples.getSampleNum()) {
+DecisionTree::DecisionTree(const Samples<std::string>& samples): root(0), trainingSamples(samples),
+	featureNum(samples.getFeatureNum()), sampleNum(samples.getSampleNum()) {
 	std::vector<int> indexes(sampleNum);
 	for(int i = 0; i < sampleNum; ++i)
 		indexes[i] = i;
@@ -37,14 +41,16 @@ bool DecisionTree::inSameCategory(const std::vector<int>& indexes)const {
 /*
  * Splits items indexed by 'indexes', and create an InnerNode for the feature on which the split based.
  * Add the InnerNode as a link to 'parent', and builds links for the InnerNode recursively.
- * When we run out of the features to split, or the items indexed by 'indexes' are in the same class(have the same label), 
+ * When we run out of the features to split, or the items indexed by 'indexes' are in the same class, 
  * a LeftNode is created and function 'build' returns.
  */
-void DecisionTree::build(InnerNode*& parent, const std::string& policyOrValue, const std::vector<int>& indexes, std::list<int>& nonSplitColumns) {
-	// if no feature to split any more, then create a left node and add the items indexed by 'indexes' to the left node
+void DecisionTree::build(InnerNode*& parent, const std::string& policyOrValue, 
+	const std::vector<int>& indexes, std::list<int>& nonSplitColumns) {
+	// if no feature to split any more, create a left node and add the items indexed by 'indexes' to it.
 	if((nonSplitColumns.empty() == true) || (inSameCategory(indexes) == true)) {
 		LeftNode* leftNode = new LeftNode(policyOrValue);
-		for(std::vector<int>::const_iterator indexIter = indexes.begin(); indexIter != indexes.end(); ++indexIter)
+		for(std::vector<int>::const_iterator indexIter = indexes.begin(); 
+			indexIter != indexes.end(); ++indexIter)
 			leftNode->addItem(trainingSamples.getSample(*indexIter));
 		
 		parent->addLink(leftNode);
@@ -61,7 +67,9 @@ void DecisionTree::build(InnerNode*& parent, const std::string& policyOrValue, c
 	if(parent == 0)
 		innerNode = parent = new InnerNode(trainingSamples.getFeatureName(splitColumn));
 	else
-		parent->addLink(innerNode = new InnerNode(policyOrValue + ": " + trainingSamples.getFeatureName(splitColumn)));
+		parent->addLink(innerNode = new InnerNode(policyOrValue + ": " + 
+			trainingSamples.getFeatureName(splitColumn)));
+			
 	std::map<std::string, std::vector<int> >::iterator iter = splits.begin();
 	while(iter != splits.end()) {
 		std::list<int> subNonSplitColumns(nonSplitColumns);
@@ -72,8 +80,10 @@ void DecisionTree::build(InnerNode*& parent, const std::string& policyOrValue, c
 }
 
 /*
- * Calculates entropies based on features in 'nonSplitColumns' and find the feature on which we will get the maximum entropy bases.
- * Split the items indexed by 'indexes' based on the feature found, store the feature index in 'splitColumn' and splits' indexes in splits.
+ * Calculates entropies based on features in 'nonSplitColumns' and 
+ * find the feature on which we will get the maximum entropy bases.
+ * Split the items indexed by 'indexes' based on the feature found, 
+ * store the feature index in 'splitColumn' and splits' indexes in splits.
  *
  * [in] nonSplitColumns: input parameter, the columns hasn't been split.
  * [in] indexes: indexes of items in 'items' to split in this round.
@@ -97,7 +107,8 @@ void DecisionTree::splitItems(const std::vector<int>& indexes, std::list<int>& n
 	splitColumn = *maxCol;
 
 	// split based on feature in 'splitColumn'
-	for(std::vector<int>::const_iterator indexIter = indexes.begin(); indexIter != indexes.end(); ++indexIter)
+	for(std::vector<int>::const_iterator indexIter = indexes.begin(); 
+		indexIter != indexes.end(); ++indexIter)
 		splits[trainingSamples.getSample(*indexIter)[splitColumn]].push_back(*indexIter);
 }
 
@@ -112,7 +123,8 @@ float DecisionTree::calcEntropy(const int col)const {
 		++valueFrequency[trainingSamples.getSample(row)[col]];
 		
 	float entropy = 0.0;
-	for(std::map<std::string, int>::iterator iter = valueFrequency.begin(); iter != valueFrequency.end(); ++iter) {
+	for(std::map<std::string, int>::iterator iter = valueFrequency.begin();
+		iter != valueFrequency.end(); ++iter) {
 		float probability = (*iter).second/static_cast<float>(sampleNum);
 		entropy += probability * logN(probability, 2);
 	}
@@ -140,7 +152,8 @@ void DecisionTree::breadthFirstTraverse()const {
 		if(innerNode != 0) {
 			std::cout<<innerNode->getPolicy()<<" ";
 			
-			for(InnerNode::iterator iter = innerNode->begin(); iter != innerNode->end(); ++iter){
+			for(InnerNode::iterator iter = innerNode->begin();
+				iter != innerNode->end(); ++iter){
 				nodes.push(*iter);
 				++nodeNumPerLevel[level+1];
 			}
@@ -149,7 +162,8 @@ void DecisionTree::breadthFirstTraverse()const {
 			if(leftNode != 0) {
 				std::cout<<leftNode->getValue()<<": ";
 				std::cout<<"[";
-				for(LeftNode::iterator iter = leftNode->begin(); iter != leftNode->end(); ++iter) {
+				for(LeftNode::iterator iter = leftNode->begin(); 
+					iter != leftNode->end(); ++iter) {
 					const std::string* item = *iter;
 					std::cout<<"(";
 					int i;

@@ -1,3 +1,7 @@
+/**
+ * Copyright(c) 2012 - 2013 minglin. All rights reserved.
+ */
+
 #ifndef _N_MIN_HEAP_H_
 #define _N_MIN_HEAP_H_
 
@@ -18,11 +22,9 @@ public:
 
 	NMinHeap(int n);
 	bool insert(const K& k, const V& v);
-
 	// iterate the heap like an array
 	int size()const;
 	std::pair<K, V> operator[](int index)const;
-	
 	~NMinHeap();
 
 private:

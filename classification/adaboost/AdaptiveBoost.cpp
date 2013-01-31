@@ -1,3 +1,7 @@
+/**
+ * Copyright(c) 2012 - 2013 minglin. All rights reserved.
+ */
+
 #include "AdaptiveBoost.h"
 #include "Samples.cpp"
 #include "WeakClassifier.h"
@@ -41,7 +45,8 @@ AdaptiveBoost::AdaptiveBoost(const Samples<float>& samples, const float threshol
 		std::cout<<std::endl;
 #endif
 		WeakLearner weakLearner;
-		errorRate = weakLearner.train(samples, categories, featureRanges, stepNum, weights);
+		errorRate = weakLearner.train(samples, categories, featureRanges,
+			stepNum, weights);
 #ifdef AB_DEBUG
 		std::cout<<"<errorRate = "<<errorRate<<">"<<std::endl;
 #endif
@@ -62,13 +67,15 @@ float AdaptiveBoost::classify(const float* sample)const {
 		int feature = weakLearner.getFeature();
 		double threshold = weakLearner.getThreshold();
 		float predicted = WeakClassifier::classify(sample, feature, threshold);
-		std::cout<<"feature = "<<feature<<", threshold = "<<threshold<<", predicted = "<<predicted<<std::endl;
+		std::cout<<"feature = "<<feature<<", threshold = "<<threshold<<", predicted = "
+			<<predicted<<std::endl;
 
 		float alpha = weakLearner.getAlpha();
 		std::cout<<"alpha = "<<alpha<<std::endl;
 		voted += alpha * predicted;
 #else
-		voted += weakLearner.getAlpha() * WeakClassifier::classify(sample, weakLearner.getFeature(), weakLearner.getThreshold());
+		voted += weakLearner.getAlpha() * WeakClassifier::classify(sample,
+			weakLearner.getFeature(), weakLearner.getThreshold());
 #endif
 	}
 #ifdef AB_DEBUG

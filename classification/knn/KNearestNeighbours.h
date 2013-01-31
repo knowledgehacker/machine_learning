@@ -1,3 +1,7 @@
+/**
+ * Copyright(c) 2012 - 2013 minglin. All rights reserved.
+ */
+
 #ifndef _K_NEAREST_NEIGHBOURS_H_
 #define _K_NEAREST_NEIGHBOURS_H_
 

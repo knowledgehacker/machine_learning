@@ -1,3 +1,7 @@
+/**
+ * Copyright(c) 2012 - 2013 minglin. All rights reserved.
+ */
+
 #ifndef _INPUT_DATA_SET_H_
 #define _INPUT_DATA_SET_H_
 

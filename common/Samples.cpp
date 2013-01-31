@@ -1,11 +1,15 @@
+/**
+ * Copyright(c) 2012 - 2013 minglin. All rights reserved.
+ */
+
 #include "Samples.h"
 #include <stdexcept>
 #include <fstream>
 #include <iostream>
 
 template<typename DataType>
-Samples<DataType>::Samples(const std::string& file, const DataReader<DataType>& reader): dataFile(file), dataReader(reader), 
-	featureNum(0), sampleNum(0) {
+Samples<DataType>::Samples(const std::string& file, const DataReader<DataType>& reader): 
+	dataFile(file), dataReader(reader), featureNum(0), sampleNum(0) {
 	std::ifstream dataStream(dataFile.c_str());
 	if(!dataStream)
 		throw std::runtime_error("Unable to open file " + dataFile + "!");
@@ -14,7 +18,8 @@ Samples<DataType>::Samples(const std::string& file, const DataReader<DataType>& 
 	dataStream.getline(line, 256);
 	std::string str(line);
 	unsigned int start = 0;
-	for(unsigned int end = str.find_first_of('\t', start); end != std::string::npos; start = end+1, end = str.find_first_of('\t', start)) {
+	for(unsigned int end = str.find_first_of('\t', start); end != std::string::npos; 
+		start = end+1, end = str.find_first_of('\t', start)) {
 		std::string feature = str.substr(start, end-start);
 		featureNames.push_back(feature);
 		++featureNum;
@@ -32,7 +37,8 @@ Samples<DataType>::Samples(const std::string& file, const DataReader<DataType>& 
 		dataStream.getline(line, 256);
 		if(dataStream.bad()) {
 			dataStream.close();
-			throw std::runtime_error("Unrecoverable errors detected when reading from file " + dataFile + "!");
+			throw std::runtime_error("Unrecoverable errors detected when reading from file " 
+				+ dataFile + "!");
 		}
 
 		if(dataStream.fail() && !dataStream.eof()) {
@@ -63,7 +69,8 @@ int Samples<DataType>::getFeatureNum()const {
 }
 
 template<typename DataType>
-std::string Samples<DataType>::getFeatureName(const int index)const throw(IndexOutOfBound) {
+std::string Samples<DataType>::getFeatureName(const int index)const 
+	throw(IndexOutOfBound) {
 	if(index >= featureNum)
 		throw IndexOutOfBound(index);
 
@@ -81,7 +88,8 @@ int Samples<DataType>::getSampleNum()const {
 }
 /*
 template<typename DataType>
-const DataType* Samples<DataType>::getSample(const int index)const throw(IndexOutOfBound) {
+const DataType* Samples<DataType>::getSample(const int index)const
+	throw(IndexOutOfBound) {
 	if(index >= sampleNum)
 		throw IndexOutOfBound(index);
 
@@ -98,8 +106,8 @@ bool Samples<DataType>::readSample(char line[256], DataType* sample) {
 	DataType digit;
 	int digitNum = 0;
 	size_t start = 0;
-	for(size_t end = str.find_first_of('\t', start); (end != std::string::npos) && (digitNum <= featureNum); 
-		start = end+1, end = str.find_first_of('\t', start)) {
+	for(size_t end = str.find_first_of('\t', start); (end != std::string::npos) 
+		&& (digitNum <= featureNum); start = end+1, end = str.find_first_of('\t', start)) {
 		std::string digitStr = str.substr(start, end-start);
 		if(dataReader(digitStr, digit) == false)
 			return false;

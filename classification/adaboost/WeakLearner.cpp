@@ -1,3 +1,7 @@
+/**
+ * Copyright(c) 2012 - 2013 minglin. All rights reserved.
+ */
+
 #include "WeakLearner.h"
 #include "Samples.cpp"
 #include "WeakClassifier.h"
@@ -9,16 +13,20 @@
 
 float WeakLearner::INFINITESIMAL = pow(-6);
 
-WeakLearner::WeakLearner(): feature(std::numeric_limits<float>::min()), threshold(std::numeric_limits<float>::min()), 
-	alpha(std::numeric_limits<float>::min()) {
+WeakLearner::WeakLearner(): feature(std::numeric_limits<float>::min()), 
+	threshold(std::numeric_limits<float>::min()), alpha(std::numeric_limits<float>::min()) {
 }
 
 /* 
  * We assume here the samples to train can be divided into two categories, +1, and -1.
- * We try to classify the samples based on features one by one, and when dividing the samples by some feature, we try 'stepNum' threshold values.
- * And find the classification that gains lowest prediction error rate, record the related information: the feature based on, and threshold value.
+ * We try to classify the samples based on features one by one, and when dividing the samples
+ * by some feature, we try 'stepNum' threshold values.
+ * And find the classification that gains lowest prediction error rate,
+ * record the related information: the feature based on, and threshold value.
  */
-float WeakLearner::train(const Samples<float>& trainingSamples, const float* categories, const std::pair<float, float>* featureRanges, 
+float WeakLearner::train(const Samples<float>& trainingSamples,
+	const float* categories,
+	const std::pair<float, float>* featureRanges, 
 	const int stepNum, float* weights) {
 	int sampleNum = trainingSamples.getSampleNum();
 	float minErrorRate = 1.0;
@@ -33,7 +41,8 @@ float WeakLearner::train(const Samples<float>& trainingSamples, const float* cat
 		for(int step = -1; step <= stepNum; ++step) {
 			float threshold = featureJMin + step * stepSize;
 			for(int i = 0; i < sampleNum; ++i)
-				predictedCategories[i] = WeakClassifier::classify(trainingSamples.getSample(i), j, threshold);	// categories: -1, 1
+				predictedCategories[i] = WeakClassifier::classify(
+					trainingSamples.getSample(i), j, threshold);	// categories: -1, 1
 #ifdef AB_DEBUG
 			std::cout<<"feature = "<<j<<", threshold = "<<threshold<<std::endl;
 			for(int i = 0; i < sampleNum; ++i)
@@ -52,9 +61,11 @@ float WeakLearner::train(const Samples<float>& trainingSamples, const float* cat
 					bestPredictedCategories[i] = predictedCategories[i];
 				this->feature = j;
 				this->threshold = threshold;
-				this->alpha = 1.0/2*ln((1-errorRate) / max(errorRate, INFINITESIMAL));	// 1/2: 1/(1 - (-1))
+				// 1/2: 1/(1 - (-1))
+				this->alpha = 1.0/2*ln((1-errorRate) / max(errorRate, INFINITESIMAL));
 #ifdef AB_DEBUG
-				//std::cout<<"feature = "<<this->feature<<", threshold = "<<this->threshold<<", alpha = "<<this->alpha<<std::endl;
+				//std::cout<<"feature = "<<this->feature<<", threshold = "<<this->threshold
+				//	<<", alpha = "<<this->alpha<<std::endl;
 #endif
 
 				minErrorRate = errorRate;
@@ -63,7 +74,10 @@ float WeakLearner::train(const Samples<float>& trainingSamples, const float* cat
 	}
 	delete[] predictedCategories;
 
-	// update 'weights' using the best weak classifier which classifies samples based on feature indexed by 'feature'
+	/*
+	 * Update 'weights' using the best weak classifier which classifies samples
+	 * based on feature indexed by 'feature'.
+	 */
 	float z = 0.0;
     for(int i = 0; i < sampleNum; ++i) {
         /*
@@ -75,7 +89,8 @@ float WeakLearner::train(const Samples<float>& trainingSamples, const float* cat
         weights[i] *= pow(-this->alpha * factor);
 		z += weights[i];
     }
-	// normalize weights to make it a distribution, that is, sum of weights[i] amouts to 1.0. Very important!!!
+	// normalize weights to make it a distributive, that is, sum of weights[i] amouts to 1.0.
+	// Very important!!!
 	for(int i = 0; i < sampleNum; ++i)
 		weights[i] /= z;
 	delete[] bestPredictedCategories;

@@ -1,3 +1,7 @@
+/**
+ * Copyright(c) 2012 - 2013 minglin. All rights reserved.
+ */
+
 #ifndef _FILE_TOKENIZER_H_
 #define _FILE_TOKENIZER_H_
 
